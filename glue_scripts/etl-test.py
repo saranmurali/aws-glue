@@ -25,6 +25,7 @@ def getcrawlerDatabase(crawlername):
     return 	response['Crawler']['DatabaseName']
 
 def runCrawler(crawlername):
+    print("Running Crawler")
     glue.start_crawler(Name=crawlername)
     response = glue.get_crawler(Name=crawlername)
     state = response['Crawler']['State']
@@ -34,9 +35,11 @@ def runCrawler(crawlername):
         state = response['Crawler']['State']
     print("final state " + state)
     print("last crawl " + response['Crawler']['LastCrawl']['Status'])
+    print("Crawler Ended")
     return response['Crawler']['LastCrawl']['Status']
 
 def runJob(jobname):
+    print("Running Job...")
     response = glue.start_job_run(JobName=jobname)
     jobRunid = response['JobRunId']
     response = glue.get_job_run(JobName=jobname,RunId=jobRunid)
@@ -48,6 +51,7 @@ def runJob(jobname):
         state = response['JobRun']['JobRunState']
         print("state " + state)
     print("final state " + state)
+    print("Job Ended")
     return state
 
 
@@ -70,7 +74,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(runCrawler('pa_techno_data_crawler'), 'SUCCEEDED')
 
         #evaluate glue job
-        # self.assertEqual(runJob('pa_etl_job'), 'SUCCEEDED')
+        self.assertEqual(runJob('pa_etl_job'), 'SUCCEEDED')
 
         #evaluate result crawler
         self.assertEqual(runCrawler('pa_technographic_json_crawler'), 'SUCCEEDED')
